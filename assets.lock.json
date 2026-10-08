@@ -1,0 +1,32 @@
+{
+  "upstream_revision": "41cbc84af539ea78a804ffca5f9c6edc1a22ce44",
+  "xn_ptts_revision": "83dfe119e4e1f7a13277aa4186882c758664ebf9",
+  "language": "german",
+  "voice": "juergen",
+  "assets": [
+    {
+      "path": "models/german/config.yaml",
+      "url": "https://raw.githubusercontent.com/kyutai-labs/pocket-tts/41cbc84af539ea78a804ffca5f9c6edc1a22ce44/pocket_tts/config/german.yaml",
+      "sha256": "ff9be552a8cc4de0e07bcf63f96ab48e4033004810aa25d9bc77b8df0390c1ba",
+      "size": 1551
+    },
+    {
+      "path": "models/german/model.safetensors",
+      "url": "https://huggingface.co/kyutai/pocket-tts-without-voice-cloning/resolve/1e08e6a23401048648a9fdcfde2f89348215c2a7/languages/german/model.safetensors",
+      "sha256": "9fe42605604832349e3f495177bde56b77ae8fee73b2ed4b63236092ccde7621",
+      "size": 219029196
+    },
+    {
+      "path": "models/german/tokenizer.json",
+      "url": "https://huggingface.co/kyutai/pocket-tts-without-voice-cloning/resolve/4e1e0a3e611c51c0b4ed8174fc10f32a54644303/languages/german/tokenizer.json",
+      "sha256": "2d77849811e3d1b6ae80e5b11b203f57e1847901104d8a0573b34f46f8dddb53",
+      "size": 245966
+    },
+    {
+      "path": "voices/official/juergen.safetensors",
+      "url": "https://huggingface.co/kyutai/pocket-tts-without-voice-cloning/resolve/1e08e6a23401048648a9fdcfde2f89348215c2a7/languages/german/embeddings/juergen.safetensors",
+      "sha256": "65104a25b2aa797c50b2cee555cb75deb6abba10169168b95857227a054126d1",
+      "size": 6096696
+    }
+  ]
+}

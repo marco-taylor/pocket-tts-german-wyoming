@@ -1,0 +1,20 @@
+[package]
+name = "pocket-tts-runtime"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+ptts.workspace = true
+xn.workspace = true
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde_yaml = "0.9"
+safetensors.workspace = true
+regex = "1"
+sha2 = "0.10"
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = "3"

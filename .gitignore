@@ -1,0 +1,67 @@
+/.tools/
+/target/
+/models/
+/voices/
+/artifacts/**/*.wav
+/artifacts/**/*.gguf
+*.partial
+artifacts/patch-check/
+artifacts/patch-final/
+
+# Local test data, models, containers, toolchains and build outputs
+/artifacts/
+**/target/
+*.safetensors
+*.gguf
+*.wav
+*.pcm
+*.log
+*.tar
+*.tar.gz
+*.partial
+*.tmp
+
+# Private configuration and credentials; public example remains eligible
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+/secrets/
+/cache/
+/.cache/
+
+# Internal infrastructure/test reports and local deployment scripts
+/docs/
+/scripts/activate-ha-*.mjs
+/scripts/start-misaki-live.sh
+/scripts/start-final-isolated.sh
+/scripts/final-multistage-*.mjs
+/-
+
+# Private comparison/deployment tooling remains local, not release source.
+/scripts/*
+!/scripts/patch-xn.mjs
+/crates/pocket-tts-wyoming/examples/
+/crates/pocket-tts-wyoming/tests/*
+!/crates/pocket-tts-wyoming/tests/safe_rules.rs
+!/crates/pocket-tts-wyoming/tests/tcp_integration.rs
+
+# Historical standalone prototype is retained only for local reference.
+/crates/pocket-tts-prototype/
+/results/
+/reports/
+/benchmarks/
+/comparison/
+/test-output/
+/.codex/
+/.agents/
+/AGENTS.md
+
+# Original icon sources remain local; only icons/pocket-tts.png is public.
+/pocket-tts-german-wyoming.png
+/pocket-tts-german-wyoming_hq.png
+/icons/pocket-tts-german-wyoming.png
+/icons/pocket-tts-german-wyoming_hq.png

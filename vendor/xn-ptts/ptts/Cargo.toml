@@ -1,0 +1,33 @@
+[package]
+name = "ptts"
+version = "0.4.0"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+description = "Pinned XN Pocket TTS with current Kyutai German compatibility patches"
+
+[dependencies]
+xn.workspace = true
+ebur128 = "0.1"
+rand = { version = "0.9", default-features = false, features = ["std_rng"] }
+rand_distr = "0.5"
+serde.workspace = true
+serde_json.workspace = true
+tracing = "0.1.44"
+tracing-subscriber = "0.3.22"
+rubato = { version = "0.15", optional = true }
+symphonia = { version = "0.5.3", features = ["all"], optional = true }
+tokenizers = { version = "0.23.1", default-features = false, features = ["fancy-regex"], optional = true }
+safetensors.workspace = true
+thiserror = "2"
+half = { version = "2.7.1", optional = true }
+
+[features]
+default = []
+hf = ["dep:tokenizers"]
+audio = ["dep:symphonia", "dep:rubato"]
+cuda = ["xn/cuda", "dep:half"]
+vulkan = ["xn/vulkan"]
+metal = ["xn/metal", "dep:half"]
+webgpu = ["xn/webgpu"]
+accelerate = ["xn/accelerate"]
+kai = ["xn/kai"]

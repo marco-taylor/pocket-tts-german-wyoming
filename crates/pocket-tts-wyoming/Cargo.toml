@@ -1,0 +1,25 @@
+[package]
+name = "pocket-tts-wyoming"
+version = "0.2.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+pocket-tts-runtime = { path = "../pocket-tts-runtime" }
+ptts.workspace = true
+xn.workspace = true
+anyhow.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.10"
+reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider"] }
+tokio = { version = "1", features = ["rt", "time", "net", "macros"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+signal-hook = "0.3"
+socket2 = "0.6"
+walkdir = "2"
+fancy-regex = "0.16"
+
+[dev-dependencies]
+tempfile = "3"
+hound = "3.5"

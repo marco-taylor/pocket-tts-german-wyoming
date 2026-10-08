@@ -1,0 +1,19 @@
+[workspace]
+members = ["vendor/xn-ptts/ptts", "crates/pocket-tts-runtime", "crates/pocket-tts-wyoming"]
+resolver = "3"
+exclude = ["crates/pocket-tts-prototype"]
+
+[workspace.dependencies]
+xn = "=0.2.10"
+ptts = { path = "vendor/xn-ptts/ptts", features = ["hf"] }
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+safetensors = "0.7"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+
+[profile.dev]
+debug = 0

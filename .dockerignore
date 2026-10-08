@@ -1,0 +1,28 @@
+# Explicit allowlist prevents models, voices, tools, artifacts or other projects
+# entering the build context (including hidden local caches).
+**
+!Dockerfile
+!Cargo.toml
+!Cargo.lock
+!.cargo/
+!.cargo/config.toml
+!crates/
+!crates/**
+!vendor/
+!vendor/**
+!tests/
+!tests/fixtures/
+!tests/fixtures/**
+!assets.lock.json
+!assets/
+!assets/german-voices.lock.json
+!docker/
+!docker/runtime-rootfs.sh
+**/target
+**/.git
+
+!licenses/
+!licenses/**
+
+!LICENSE
+!THIRD_PARTY_NOTICES.md

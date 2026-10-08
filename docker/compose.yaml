@@ -1,0 +1,41 @@
+# Local deployment recipe only. Not started by the isolated test.
+services:
+  pocket-tts:
+    image: "${POCKET_TTS_IMAGE:?set the existing locally built image tag}"
+    platform: linux/amd64
+    restart: unless-stopped
+    user: "${POCKET_TTS_UID:-99}:${POCKET_TTS_GID:-100}"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    stop_grace_period: 15s
+    ports:
+      - "${POCKET_TTS_HOST_PORT:-10204}:10204/tcp"
+    volumes:
+      - type: bind
+        source: "${POCKET_TTS_HOST_MODELS:?set a dedicated writable models path}"
+        target: /app/models
+      - type: bind
+        source: "${POCKET_TTS_HOST_VOICES:?set a dedicated writable voices path}"
+        target: /app/voices
+    environment:
+      POCKET_TTS_LANGUAGE: german
+      POCKET_TTS_NORMALIZE: "${POCKET_TTS_NORMALIZE:-true}"
+      POCKET_TTS_QUANTIZE: "${POCKET_TTS_QUANTIZE:-true}"
+      POCKET_TTS_SPEED: "${POCKET_TTS_SPEED-1.0}"
+      POCKET_TTS_NORMALIZER: "${POCKET_TTS_NORMALIZER:-safe}"
+      POCKET_TTS_MODELS_DIR: /app/models
+      POCKET_TTS_VOICES_DIR: /app/voices
+      POCKET_TTS_VOICE_CACHE_MB: "${POCKET_TTS_VOICE_CACHE_MB:-32}"
+      POCKET_TTS_DOWNLOAD_VOICES: "${POCKET_TTS_DOWNLOAD_VOICES:-true}"
+      WYOMING_HOST: 0.0.0.0
+      WYOMING_PORT: 10204
+      POCKET_TTS_THREADS: "${POCKET_TTS_THREADS:-2}"
+      POCKET_TTS_VOICE: "${POCKET_TTS_VOICE:-juergen}"
+      POCKET_TTS_MODEL_PATH: "${POCKET_TTS_MODEL_PATH:-}"
+      RUST_LOG: "${RUST_LOG:-info}"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

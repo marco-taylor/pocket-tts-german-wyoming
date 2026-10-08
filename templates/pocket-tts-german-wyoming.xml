@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Prepared for future publication; the GHCR image and GitHub raw URLs are not yet published. -->
+<Container version="2">
+  <Name>pocket-tts-german-wyoming</Name>
+  <Repository>ghcr.io/marco-taylor/pocket-tts-german-wyoming:latest</Repository>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Project>https://github.com/marco-taylor/pocket-tts-german-wyoming</Project>
+  <ReadMe>https://github.com/marco-taylor/pocket-tts-german-wyoming/blob/main/README.md</ReadMe>
+  <Overview>Native Rust German Pocket TTS server with Wyoming protocol support for Home Assistant. CPU-only streaming TTS: German/de-DE, 24 kHz mono PCM16 LE, Q8 by default, 27 official German voice states and configurable speech speed. Models and voices are downloaded from pinned official sources when missing and persist across restarts. Compatible local assets can be installed manually. No Python, PyTorch or GPU runtime. Add Wyoming Protocol manually in Home Assistant using the host address and Wyoming port. This template prepares a future registry release; no public image or CA listing is currently claimed.</Overview>
+  <Category>Tools:</Category>
+  <Requires>linux/amd64 with Gracemont-compatible AVX2 CPU; tested on Intel N100. Dedicated models and voices directories must be writable by UID 99 / GID 100. First initialization needs Internet access unless compatible local assets are installed. No Web UI.</Requires>
+  <Icon>https://raw.githubusercontent.com/marco-taylor/pocket-tts-german-wyoming/main/icons/pocket-tts.png</Icon>
+  <TemplateURL>https://raw.githubusercontent.com/marco-taylor/pocket-tts-german-wyoming/main/templates/pocket-tts-german-wyoming.xml</TemplateURL>
+  <ExtraParams>--restart unless-stopped --read-only --cap-drop ALL --security-opt no-new-privileges</ExtraParams>
+  <Config Name="Wyoming Port" Target="10204" Default="10204" Mode="tcp" Description="Wyoming TCP port for Home Assistant. Container port remains 10204." Type="Port" Display="always" Required="true" Mask="false">10204</Config>
+  <Config Name="Models" Target="/app/models" Default="/mnt/user/appdata/pocket-tts-german-wyoming/models" Mode="rw" Description="Dedicated persistent models directory. Must be writable by UID 99 / GID 100; existing user files are not overwritten." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/pocket-tts-german-wyoming/models</Config>
+  <Config Name="Voices" Target="/app/voices" Default="/mnt/user/appdata/pocket-tts-german-wyoming/voices" Mode="rw" Description="Dedicated persistent voices directory. Must be writable by UID 99 / GID 100; existing user files are not overwritten." Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/pocket-tts-german-wyoming/voices</Config>
+  <Config Name="Model language" Target="POCKET_TTS_LANGUAGE" Default="german" Mode="" Description="Only german is supported; Wyoming advertises de-DE." Type="Variable" Display="always" Required="true" Mask="false">german</Config>
+  <Config Name="Local model path" Target="POCKET_TTS_MODEL_PATH" Default="" Mode="" Description="Optional compatible model path inside the container. When set, no automatic model download or replacement occurs." Type="Variable" Display="advanced" Required="false" Mask="false"></Config>
+  <Config Name="Models directory" Target="POCKET_TTS_MODELS_DIR" Default="/app/models" Mode="" Description="Persistent model root. Keep aligned with the models volume target." Type="Variable" Display="advanced" Required="true" Mask="false">/app/models</Config>
+  <Config Name="Voices directory" Target="POCKET_TTS_VOICES_DIR" Default="/app/voices" Mode="" Description="Persistent official and local voice root. Keep aligned with the voices volume target." Type="Variable" Display="advanced" Required="true" Mask="false">/app/voices</Config>
+  <Config Name="Default voice" Target="POCKET_TTS_VOICE" Default="juergen" Mode="" Description="Default voice name. 27 pinned official German voices plus compatible local states are discovered at startup. See README and assets/german-voices.lock.json." Type="Variable" Display="always" Required="true" Mask="false">juergen</Config>
+  <Config Name="Q8 quantization" Target="POCKET_TTS_QUANTIZE" Default="true" Mode="" Description="true uses Q8; false uses FP32. Q8 derivatives are stored separately; the original model is never overwritten." Type="Variable" Display="always" Required="true" Mask="false">true</Config>
+  <Config Name="CPU threads" Target="POCKET_TTS_THREADS" Default="2" Mode="" Description="Backend threads: 1 to 4. Intel N100 tested with 2." Type="Variable" Display="always" Required="true" Mask="false">2</Config>
+  <Config Name="German normalization" Target="POCKET_TTS_NORMALIZE" Default="true" Mode="" Description="Native German SPAN/Priority normalization before the Pocket TTS tokenizer." Type="Variable" Display="always" Required="true" Mask="false">true</Config>
+  <Config Name="Speech Speed" Target="POCKET_TTS_SPEED" Default="1.0" Mode="" Description="Speech speed / Sprechgeschwindigkeit. Valid range: 0.8–1.2; default: 1.0. Intermediate values allowed. Invalid values cause a startup error; no clamping." Type="Variable" Display="always" Required="true" Mask="false">1.0</Config>
+  <Config Name="Wyoming listen port" Target="WYOMING_PORT" Default="10204" Mode="" Description="Container listen port. Keep 10204 to match the port mapping; change only the host port when necessary." Type="Variable" Display="advanced" Required="true" Mask="false">10204</Config>
+  <Config Name="Log level" Target="RUST_LOG" Default="info" Mode="" Description="error, warn, info, debug or trace. INFO currently logs input, normalized and tokenizer text; use warn for privacy." Type="Variable" Display="advanced" Required="true" Mask="false">info</Config>
+  <Config Name="Voice cache MiB" Target="POCKET_TTS_VOICE_CACHE_MB" Default="32" Mode="" Description="Lazy voice LRU budget: 16–512 MiB. Not a total-process RAM limit." Type="Variable" Display="advanced" Required="true" Mask="false">32</Config>
+  <Config Name="Download official voices" Target="POCKET_TTS_DOWNLOAD_VOICES" Default="true" Mode="" Description="Automatically download missing pinned public official voice states. Existing valid states are reused; local states are not overwritten." Type="Variable" Display="advanced" Required="true" Mask="false">true</Config>
+</Container>
