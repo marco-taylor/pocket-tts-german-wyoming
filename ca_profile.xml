@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Profile>
+  <Category>Tools:</Category>
+  <Name>pocket-tts-german-wyoming</Name>
+  <Overview>Native deutsche Pocket-TTS-Sprachausgabe für Home Assistant über das Wyoming-Protokoll. CPU-only, mit Streaming, deutscher Textnormalisierung und 27 deutschen Stimmen; getestet auf Intel N100.</Overview>
+  <Project>https://github.com/marco-taylor/pocket-tts-german-wyoming</Project>
+  <Icon>https://raw.githubusercontent.com/marco-taylor/pocket-tts-german-wyoming/main/icons/pocket-tts.png</Icon>
+</Profile>
