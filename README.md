@@ -4,37 +4,37 @@
   <img src="icons/pocket-tts-hq.png" alt="pocket-tts-german-wyoming" width="320">
 </p>
 
-Native Rust German Pocket TTS as a Wyoming TTS service for Home Assistant.
-CPU-only, tested on Intel N100 (linux/amd64, Gracemont/AVX2). The Docker runtime
-has no Python, PyTorch, GPU libraries, Cargo or compiler.
+Natives deutsches Pocket TTS in Rust als Wyoming-TTS-Dienst für Home Assistant.
+CPU-only, getestet auf Intel N100 (linux/amd64, Gracemont/AVX2). Die Docker-Runtime
+enthält weder Python, PyTorch, GPU-Bibliotheken, Cargo noch einen Compiler.
 
-- Pinned official German model, Q8 by default; FP32 remains available.
-- Genuine incremental FlowLM → stateful Mimi → PCM → Wyoming streaming.
-- 24,000 Hz, mono, signed PCM16 little endian; no output resampling.
-- 27 validated official voice states advertised with locale **de-DE** only.
-- Juergen default; voice selection through Wyoming; unknown voices fail clearly.
-- Native German SPAN/Priority text normalization and streaming speech-speed control.
-- Persistent model/voice storage, atomic validated downloads, separate Q8 derivatives.
-- Native readiness healthcheck, graceful shutdown, one synthesis at a time.
+- Fest gepinntes offizielles deutsches Modell, standardmäßig Q8; FP32 bleibt verfügbar.
+- Echtes inkrementelles FlowLM → zustandsbehaftetes Mimi → PCM → Wyoming-Streaming.
+- 24.000 Hz, Mono, vorzeichenbehaftetes PCM16 Little Endian; kein Resampling der Ausgabe.
+- 27 validierte offizielle Voice-States, ausschließlich mit Locale **de-DE** angeboten.
+- Juergen als Standardstimme; Stimmenwahl über Wyoming; unbekannte Stimmen führen zu einem eindeutigen Fehler.
+- Native deutsche SPAN-/Prioritäts-Textnormalisierung und Streaming-Sprachgeschwindigkeitssteuerung.
+- Persistente Modell-/Stimmenspeicherung, atomare validierte Downloads, separate Q8-Derivate.
+- Nativer Readiness-Healthcheck, sauberes Herunterfahren, jeweils eine Synthese gleichzeitig.
 
-The regular multi-stage image and Home Assistant listening test passed on N100.
-This repository prepares a locally buildable Docker project; no registry image
-or Unraid Community Applications listing is claimed to be published.
+Das reguläre Multi-Stage-Image und der Home-Assistant-Hörtest wurden auf dem N100 erfolgreich
+bestanden. Dieses Repository stellt ein lokal baubares Docker-Projekt bereit; es wird hier nicht
+behauptet, dass bereits ein Registry-Image oder ein Eintrag in Unraid Community Applications veröffentlicht ist.
 
-## Build and Docker
+## Build und Docker
 
 ```bash
 docker build --platform linux/amd64 -t pocket-tts-german-wyoming:local .
 ```
 
-The build pins Rust 1.99.0 and Cargo dependencies. Debian build packages use
-Bookworm repositories, not a frozen package snapshot. Runtime is `scratch` with
-the actual ELF library closure, CA certificates and license records.
-The fixed Gracemont target requires a compatible AVX2 CPU; this is not a generic
-image for older x86 CPUs or ARM.
+Der Build verwendet fest Rust 1.99.0 und gepinnte Cargo-Abhängigkeiten. Die Debian-Build-Pakete
+verwenden Bookworm-Repositories und keinen eingefrorenen Paket-Snapshot. Die Runtime ist `scratch`
+mit den tatsächlich benötigten ELF-Bibliotheken, CA-Zertifikaten und Lizenzinformationen.
+Das feste Gracemont-Target erfordert eine kompatible AVX2-CPU; dies ist kein generisches Image
+für ältere x86-CPUs oder ARM.
 
-Create dedicated writable model and voice directories owned by the container
-user (default UID 99 / GID 100). Do not change permissions on other projects.
+Erstelle eigene beschreibbare Modell- und Stimmenverzeichnisse, die dem Container-Benutzer
+gehören (standardmäßig UID 99 / GID 100). Ändere keine Berechtigungen anderer Projekte.
 
 ```bash
 docker run -d --name pocket-tts \
@@ -47,108 +47,107 @@ docker run -d --name pocket-tts \
   pocket-tts-german-wyoming:local
 ```
 
-Health is ready only after the model/default voice are available and Wyoming
-responds. First startup may download assets and produce Q8; subsequent startup
-validates and reuses them. The original model is never overwritten.
-See [docker/README.md](docker/README.md) and [docker/compose.yaml](docker/compose.yaml).
-The prepared Unraid template is [templates/pocket-tts-german-wyoming.xml](templates/pocket-tts-german-wyoming.xml),
-with public icon [icons/pocket-tts.png](icons/pocket-tts.png). Its future image path
-`ghcr.io/marco-taylor/pocket-tts-german-wyoming:latest` and GitHub raw URLs are
-prepared only; the image and CA listing are **not yet published**.
-It maps Wyoming TCP 10204 and dedicated models/voices directories under
-`/mnt/user/appdata/pocket-tts-german-wyoming/` to `/app/models` and `/app/voices`.
-Ensure those directories are writable by UID 99 / GID 100. Speech speed remains
-configurable from 0.8 to 1.2, default 1.0; intermediate values are allowed.
+Der Health-Status wird erst dann „ready“, wenn Modell und Standardstimme verfügbar sind und
+Wyoming antwortet. Beim ersten Start können Assets heruntergeladen und Q8-Dateien erzeugt werden;
+bei späteren Starts werden sie validiert und wiederverwendet. Das Originalmodell wird niemals überschrieben.
+Siehe [docker/README.md](docker/README.md) und [docker/compose.yaml](docker/compose.yaml).
+Das vorbereitete Unraid-Template befindet sich unter [templates/pocket-tts-german-wyoming.xml](templates/pocket-tts-german-wyoming.xml),
+das öffentliche Icon unter [icons/pocket-tts.png](icons/pocket-tts.png). Der vorgesehene Image-Pfad
+`ghcr.io/marco-taylor/pocket-tts-german-wyoming:latest` und die GitHub-Raw-URLs sind
+nur vorbereitet; Image und CA-Eintrag sind **noch nicht veröffentlicht**.
+Das Template mappt Wyoming TCP 10204 sowie eigene models-/voices-Verzeichnisse unter
+`/mnt/user/appdata/pocket-tts-german-wyoming/` auf `/app/models` und `/app/voices`.
+Stelle sicher, dass diese Verzeichnisse für UID 99 / GID 100 beschreibbar sind. Die Sprachgeschwindigkeit
+ist von 0.8 bis 1.2 konfigurierbar, Standard ist 1.0; Zwischenwerte sind zulässig.
 
-In Home Assistant, manually add **Wyoming Protocol**, using the Docker host and
-published port (default 10204). Select `pocket-tts`, German (Germany), and a voice.
-No mDNS advertisement is implemented. Home Assistant itself is not configured
-by this project.
+Füge in Home Assistant manuell **Wyoming Protocol** hinzu und verwende den Docker-Host sowie
+den veröffentlichten Port (standardmäßig 10204). Wähle `pocket-tts`, Deutsch (Deutschland) und eine Stimme.
+Eine mDNS-Ankündigung ist nicht implementiert. Home Assistant selbst wird von diesem Projekt
+nicht konfiguriert.
 
-## Configuration
+## Konfiguration
 
-[./.env.example](./.env.example) documents settings; the binary does not load it
-automatically. Pass ENV to Docker, Compose or your process.
+[./.env.example](./.env.example) dokumentiert die Einstellungen; das Binary lädt diese Datei
+nicht automatisch. Übergib die ENV-Variablen an Docker, Compose oder deinen Prozess.
 
-| Variable | Default | Meaning |
+| Variable | Standard | Bedeutung |
 |---|---|---|
-| POCKET_TTS_LANGUAGE | german | This release supports the pinned German architecture |
-| POCKET_TTS_MODEL_PATH | unset | Explicit local model directory; disables automatic replacement/download |
-| POCKET_TTS_MODELS_DIR | /app/models | Persistent model root |
-| POCKET_TTS_VOICES_DIR | /app/voices | Persistent official/local voice root |
-| POCKET_TTS_VOICE | juergen | Configurable default voice |
-| POCKET_TTS_QUANTIZE | true | Q8; false selects FP32 |
-| POCKET_TTS_THREADS | 2 | Backend threads, allowed 1–4; N100 tested |
-| POCKET_TTS_NORMALIZE | true | German normalization before Pocket tokenizer |
-| POCKET_TTS_SPEED | 1.0 | Speech speed, continuous range **0.8–1.2** |
-| POCKET_TTS_VOICE_CACHE_MB | 32 | Lazy LRU voice cache, allowed 16–512 MiB |
-| POCKET_TTS_DOWNLOAD_VOICES | true | Manage pinned public official voices automatically |
-| WYOMING_HOST | 0.0.0.0 | Listen interface |
-| WYOMING_PORT | 10204 | Container/process TCP port |
-| RUST_LOG | info | error, warn, info, debug or trace |
+| POCKET_TTS_LANGUAGE | german | Diese Version unterstützt die gepinnte deutsche Architektur |
+| POCKET_TTS_MODEL_PATH | nicht gesetzt | Explizites lokales Modellverzeichnis; deaktiviert automatisches Ersetzen/Herunterladen |
+| POCKET_TTS_MODELS_DIR | /app/models | Persistentes Modell-Stammverzeichnis |
+| POCKET_TTS_VOICES_DIR | /app/voices | Persistentes Stammverzeichnis für offizielle/lokale Stimmen |
+| POCKET_TTS_VOICE | juergen | Konfigurierbare Standardstimme |
+| POCKET_TTS_QUANTIZE | true | Q8; false wählt FP32 |
+| POCKET_TTS_THREADS | 2 | Backend-Threads, zulässig 1–4; auf N100 getestet |
+| POCKET_TTS_NORMALIZE | true | Deutsche Normalisierung vor dem Pocket-Tokenizer |
+| POCKET_TTS_SPEED | 1.0 | Sprachgeschwindigkeit, kontinuierlicher Bereich **0.8–1.2** |
+| POCKET_TTS_VOICE_CACHE_MB | 32 | Lazy-LRU-Stimmencache, zulässig 16–512 MiB |
+| POCKET_TTS_DOWNLOAD_VOICES | true | Verwaltet die gepinnten öffentlichen offiziellen Stimmen automatisch |
+| WYOMING_HOST | 0.0.0.0 | Listen-Interface |
+| WYOMING_PORT | 10204 | TCP-Port des Containers/Prozesses |
+| RUST_LOG | info | error, warn, info, debug oder trace |
 
-Advanced existing options: `POCKET_TTS_NORMALIZER=safe` is the tested release
-profile. `span`, `misaki` and `final` are historical comparison profiles, not
-recommended for normal deployment; their broader experimental rules are not
-active under `safe`. `POCKET_TTS_READY_FILE` optionally writes a diagnostic
-readiness snapshot; its parent must exist and be writable.
+Erweiterte bestehende Optionen: `POCKET_TTS_NORMALIZER=safe` ist das getestete Release-Profil.
+`span`, `misaki` und `final` sind historische Vergleichsprofile und werden für den normalen
+Betrieb nicht empfohlen; ihre weiter gefassten experimentellen Regeln sind unter `safe` nicht aktiv.
+`POCKET_TTS_READY_FILE` schreibt optional einen diagnostischen Readiness-Snapshot; das übergeordnete
+Verzeichnis muss existieren und beschreibbar sein.
 
-### Speech speed
+### Sprachgeschwindigkeit
 
-| Value | Meaning |
+| Wert | Bedeutung |
 |---|---|
-| 0.8 | Slower |
-| 1.0 | Normal / reference |
-| 1.2 | Faster |
+| 0.8 | Langsamer |
+| 1.0 | Normal / Referenz |
+| 1.2 | Schneller |
 
-Intermediate values such as 0.85 and 1.05 are allowed. Unset means 1.0.
-Non-finite, malformed, empty or out-of-range values cause a startup/configuration
-error: no clamping and no silent fallback.
+Zwischenwerte wie 0.85 und 1.05 sind zulässig. Nicht gesetzt bedeutet 1.0.
+Nicht endliche, fehlerhaft formatierte, leere oder außerhalb des Bereichs liegende Werte verursachen
+einen Start-/Konfigurationsfehler: kein Clamping und kein stiller Fallback.
 
-Native bounded streaming WSOLA follows Mimi when speed differs from 1.0.
-The output remains 24 kHz mono PCM16 LE; it does not reinterpret the sample rate
-or wait for a full waveform. Local waveform alignment largely preserves pitch,
-although time-stretch artifacts can occur. At 1.0 the original PCM passes through
-unchanged; the tested reference was byte-identical. ENV is read at startup:
-changing speed requires recreating the Docker container with the new ENV,
-not merely restarting it.
+Native begrenzte Streaming-WSOLA-Verarbeitung folgt auf Mimi, wenn die Geschwindigkeit von 1.0 abweicht.
+Die Ausgabe bleibt 24 kHz Mono PCM16 LE; die Samplerate wird nicht uminterpretiert und es wird nicht
+auf eine vollständige Wellenform gewartet. Die lokale Wellenformausrichtung erhält die Tonhöhe weitgehend,
+wobei Time-Stretch-Artefakte auftreten können. Bei 1.0 wird das ursprüngliche PCM unverändert durchgereicht;
+die getestete Referenz war byte-identisch. ENV wird beim Start gelesen: Eine Änderung der Geschwindigkeit
+erfordert das Neuerstellen des Docker-Containers mit der neuen ENV und nicht lediglich einen Neustart.
 
-### German normalization
+### Deutsche Normalisierung
 
-Existing rules cover numbers, negatives, comma decimals, German thousands,
-calendar-validated numerical/named-month dates with contextual ordinal forms,
-times, temperatures, percentages and common Home Assistant units.
-Structured spans are consumed once; protected technical tokens take priority.
-The default includes nine narrowly tested additions informed by Misaki:
-Euro, Cent, `z. B.`, `ca.` before numbers, `bzw.`, `inkl.`, context-dependent
-`Nr.`, `etc.` and month abbreviations. Euro/Cent precision is preserved.
-`Dr.`, `Prof.`, `Fr.` and `AG` expansions remain excluded in the default profile.
-This is our Rust normalizer, not Misaki G2P, espeak-ng or a Python service.
+Die vorhandenen Regeln decken Zahlen, negative Werte, Dezimalzahlen mit Komma, deutsche Tausendertrennung,
+kalendergeprüfte numerische und ausgeschriebene Monatsdaten mit kontextabhängigen Ordinalformen,
+Uhrzeiten, Temperaturen, Prozentangaben und gängige Home-Assistant-Einheiten ab.
+Strukturierte Spans werden genau einmal verarbeitet; geschützte technische Tokens haben Vorrang.
+Der Standard enthält neun eng begrenzte und getestete, von Misaki inspirierte Ergänzungen:
+Euro, Cent, `z. B.`, `ca.` vor Zahlen, `bzw.`, `inkl.`, kontextabhängiges
+`Nr.`, `etc.` und Monatsabkürzungen. Die Genauigkeit von Euro-/Cent-Beträgen bleibt erhalten.
+Erweiterungen für `Dr.`, `Prof.`, `Fr.` und `AG` bleiben im Standardprofil ausgeschlossen.
+Dies ist unser Rust-Normalizer, nicht Misaki G2P, espeak-ng oder ein Python-Dienst.
 
-RAW, normalized and tokenizer strings are currently logged at INFO for diagnosis.
-Use `RUST_LOG=warn` when those potentially private texts should not be logged.
-Recognition of free-form entity names/ambiguous technical strings is conservative
-but cannot protect every unknown format. Model pronunciation is not guaranteed
-for arbitrary text.
+RAW-, normalisierte und Tokenizer-Strings werden derzeit zu Diagnosezwecken auf INFO geloggt.
+Verwende `RUST_LOG=warn`, wenn diese potenziell privaten Texte nicht protokolliert werden sollen.
+Die Erkennung frei formulierter Entitätsnamen und mehrdeutiger technischer Strings ist konservativ,
+kann jedoch nicht jedes unbekannte Format schützen. Die Modellaussprache ist für beliebige Texte
+nicht garantiert.
 
-## Models and voices
+## Modelle und Stimmen
 
-Sources, revisions, sizes and SHA256 are pinned in [./assets.lock.json](./assets.lock.json)
-and [assets/german-voices.lock.json](assets/german-voices.lock.json).
-Public official states require no HF_TOKEN. No assets are included in Git/image.
-Downloads use owned temporary files, verification and no-overwrite atomic rename;
-manifests are written last. Existing invalid files are reported, never silently
-replaced. Interrupted partial files are detected and retained for inspection.
+Quellen, Revisionen, Größen und SHA256 sind in [./assets.lock.json](./assets.lock.json)
+und [assets/german-voices.lock.json](assets/german-voices.lock.json) fest gepinnt.
+Öffentliche offizielle States benötigen kein HF_TOKEN. Im Git-Repository/Image sind keine Assets enthalten.
+Downloads verwenden eigene temporäre Dateien, Validierung und atomare Umbenennung ohne Überschreiben;
+Manifeste werden zuletzt geschrieben. Vorhandene ungültige Dateien werden gemeldet und niemals stillschweigend
+ersetzt. Unterbrochene Teildateien werden erkannt und zur Prüfung beibehalten.
 
-An explicit local model directory needs compatible `config.yaml`, `tokenizer.json`
-and `model.safetensors`; incompatible/incomplete data fail without automatic
-fallback. Separate Q8 files also need their provenance/hash sidecar.
-Q8 quantizes the supported FlowLM projection/FFN tensors; Mimi and KV remain FP32.
+Ein explizites lokales Modellverzeichnis benötigt kompatible `config.yaml`, `tokenizer.json`
+und `model.safetensors`; inkompatible oder unvollständige Daten führen ohne automatischen
+Fallback zu einem Fehler. Separate Q8-Dateien benötigen ebenfalls ihre Provenienz-/Hash-Sidecar-Datei.
+Q8 quantisiert die unterstützten FlowLM-Projektions-/FFN-Tensoren; Mimi und KV bleiben FP32.
 
-Official states live under `/app/voices/official/german/<revision>/`.
-Local states are discovered recursively on startup, for example
-`/app/voices/local/my_voice.safetensors`, advertised as `local/my_voice`.
-They need compatible embedded metadata or a sibling `my_voice.voice.json`:
+Offizielle States liegen unter `/app/voices/official/german/<revision>/`.
+Lokale States werden beim Start rekursiv erkannt, zum Beispiel
+`/app/voices/local/my_voice.safetensors`, und als `local/my_voice` angeboten.
+Sie benötigen kompatible eingebettete Metadaten oder eine benachbarte `my_voice.voice.json`:
 
 ```json
 {
@@ -160,14 +159,14 @@ They need compatible embedded metadata or a sibling `my_voice.voice.json`:
 }
 ```
 
-KV shapes, offsets, padding and finite values are validated. Incompatible voices
-are skipped with warnings. Missing valid/default voice keeps readiness false.
-Only the default is prewarmed/pinned; others use a bounded lazy LRU. Its budget
-is not a total-process RAM limit. WAV voice cloning is not implemented.
+KV-Formen, Offsets, Padding und endliche Werte werden validiert. Inkompatible Stimmen
+werden mit Warnungen übersprungen. Eine fehlende gültige Standardstimme hält Readiness auf false.
+Nur die Standardstimme wird vorgewärmt/gepinnt; andere verwenden einen begrenzten Lazy-LRU-Cache.
+Dessen Budget ist kein RAM-Limit für den gesamten Prozess. WAV-Voice-Cloning ist nicht implementiert.
 
-## Development and tests
+## Entwicklung und Tests
 
-Rust 1.99.0, an x86_64 Linux C linker and Gracemont-compatible CPU are required.
+Rust 1.99.0, ein x86_64-Linux-C-Linker und eine Gracemont-kompatible CPU werden benötigt.
 
 ```bash
 cargo fmt --all --check
@@ -175,25 +174,25 @@ cargo test --locked --workspace
 cargo build --locked --release -p pocket-tts-wyoming
 ```
 
-Unit/regression tests require no downloaded weights. Explicitly ignored
-hardware/TCP tests need compatible local assets and should be run only in your
-own isolated environment. Generated WAVs/logs belong under ignored artifacts.
-Output streaming is distinct from input text streaming: Wyoming
-`supports_synthesize_streaming=false` refers to unsupported streaming text input.
-Disconnects cancel synthesis; concurrent requests return `busy`.
+Unit-/Regressionstests benötigen keine heruntergeladenen Gewichte. Explizit ignorierte
+Hardware-/TCP-Tests benötigen kompatible lokale Assets und sollten nur in einer eigenen
+isolierten Umgebung ausgeführt werden. Erzeugte WAVs/Logs gehören unter ignorierte artifacts.
+Output-Streaming unterscheidet sich von Input-Text-Streaming: Wyoming
+`supports_synthesize_streaming=false` bezeichnet nicht unterstützte Streaming-Texteingabe.
+Verbindungsabbrüche brechen die Synthese ab; gleichzeitige Anfragen erhalten `busy`.
 
-## Acknowledgements and License / Third-party licenses
+## Danksagungen und Lizenz / Drittanbieter-Lizenzen
 
-Thanks to [Kyutai Pocket TTS](https://github.com/kyutai-labs/pocket-tts),
-[gradium-ai XN / xn-ptts](https://github.com/gradium-ai/xn-ptts) and
-[Misaki](https://github.com/hexgrad/misaki) contributors. Misaki served as an
-analysis/reference source for selected normalization rules, not as a runtime or
-phonemizer. Historical adapted comparison source retains its Apache-2.0 license.
+Vielen Dank an die Mitwirkenden von [Kyutai Pocket TTS](https://github.com/kyutai-labs/pocket-tts),
+[gradium-ai XN / xn-ptts](https://github.com/gradium-ai/xn-ptts) und
+[Misaki](https://github.com/hexgrad/misaki). Misaki diente als Analyse-/Referenzquelle für ausgewählte
+Normalisierungsregeln, nicht als Runtime oder Phonemizer. Historisch angepasster Vergleichsquellcode
+behält seine Apache-2.0-Lizenz.
 
-Our original code: **MIT**, Copyright (c) 2026 Marco Taylor, [./LICENSE](./LICENSE).
-Third-party code and assets keep their own licenses; see
+Unser eigener Code: **MIT**, Copyright (c) 2026 Marco Taylor, [./LICENSE](./LICENSE).
+Drittanbieter-Code und Assets behalten ihre jeweiligen Lizenzen; siehe
 [./THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
-In particular, the pinned Kyutai model/voice repository declares **CC BY 4.0**:
-models/voices are **not** relicensed under our MIT license. Local custom assets
-may have different licenses. Vendored xn-ptts remains MIT OR Apache-2.0;
-Misaki-adapted files remain Apache-2.0.
+Insbesondere deklariert das gepinnte Kyutai-Modell-/Stimmen-Repository **CC BY 4.0**:
+Modelle/Stimmen werden **nicht** unter unserer MIT-Lizenz neu lizenziert. Lokale benutzerdefinierte
+Assets können andere Lizenzen besitzen. Vendored xn-ptts bleibt MIT OR Apache-2.0;
+von Misaki adaptierte Dateien bleiben Apache-2.0.
