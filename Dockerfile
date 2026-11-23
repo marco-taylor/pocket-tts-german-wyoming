@@ -30,6 +30,7 @@ LABEL org.opencontainers.image.title="pocket-tts-german-wyoming" \
       pocket-tts.build.cpu="gracemont" \
       pocket-tts.build.rust="1.99.0" \
       pocket-tts.model.revision="1e08e6a23401048648a9fdcfde2f89348215c2a7"
+LABEL org.opencontainers.image.source=https://github.com/marco-taylor/pocket-tts-german-wyoming
 ENV POCKET_TTS_LANGUAGE=german \
     POCKET_TTS_QUANTIZE=true \
     POCKET_TTS_NORMALIZE=true \
